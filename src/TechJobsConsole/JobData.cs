@@ -31,7 +31,8 @@ namespace TechJobsConsole
             foreach (Dictionary<string,string> job in AllJobs)
             {
                 // mapping the collection of values to a single string.  using System.Linq
-                string jobString = string.Join(" ", job.Select(x => x.Value)).ToLower();
+                string jobString = string.Join("\n", job.Select(x => x.Value)).ToLower();
+                // uses newline as a separator to prevent false positives owing to wraparound
 
                 // checking the string for searchTerm
                 if (jobString.Contains(searchTerm))
