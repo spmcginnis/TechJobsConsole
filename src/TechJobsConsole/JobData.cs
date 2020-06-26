@@ -1,14 +1,50 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 
 namespace TechJobsConsole
 {
     class JobData
     {
-        static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
+        static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>(); // this is interesting
         static bool IsDataLoaded = false;
+
+
+
+       /*
+        FindByValue: a method that will search for a string within each of the columns.
+        It should not return duplicates.
+        It should still work if a new field is added later.
+        It will be called in Main
+       */
+
+        public static List<Dictionary<string,string>> FindByValue(string searchTerm)
+        {
+            // load data, if not already loaded. This populates AllJobs
+            LoadData();
+            // Output list called jobs
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+            
+            foreach (Dictionary<string,string> job in AllJobs)
+            {
+                // mapping the collection of values to a single string.  using System.Linq
+                string jobString = string.Join(" ", job.Select(x => x.Value)).ToLower();
+
+                // checking the string for searchTerm
+                if (jobString.Contains(searchTerm))
+                { 
+                    jobs.Add(job);
+                }
+
+            }
+            return jobs;
+        }
+
+
+
 
         public static List<Dictionary<string, string>> FindAll()
         {
@@ -38,18 +74,18 @@ namespace TechJobsConsole
             return values;
         }
 
-        public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
+        public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string searchTerm)
         {
-            // load data, if not already loaded
+            // load data, if not already loaded. This populates AllJobs
             LoadData();
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
 
             foreach (Dictionary<string, string> row in AllJobs)
             {
-                string aValue = row[column];
+                string aValue = row[column].ToLower();
 
-                if (aValue.Contains(value))
+                if (aValue.Contains(searchTerm))
                 {
                     jobs.Add(row);
                 }
